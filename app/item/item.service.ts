@@ -1,14 +1,19 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs/Rx';
 import { Store } from '@ngrx/store';
+import * as nshttp from 'http';
+import { ImageSource } from 'image-source';
+import * as _ from 'lodash';
 
-import { Item } from "./item";
+import { Item, ItemImgSrc } from "./item";
 
 import { AppState } from '../store/app-state';
 
 import {
     ITEMS_RELOAD,
-    ITEMS_ADD_MANY
+    ITEMS_ADD_MANY,
+    ITEMS_IMG_SRC_ADD,
+    ITEMS_IMG_SRC_CLEAN
 } from '../store/item-reducer';
 
 @Injectable()
@@ -32,7 +37,25 @@ export class ItemService {
 
     getItems(): Observable<Item[]> {
 
-        return this.store.select(state => state.items);
+        const items$: Observable<Item[]> = this.store.select(state => state.items);
+        const itemsImgSrc$: Observable<ItemImgSrc[]> = this.store.select(state => state.itemsImgSrc);
+
+        return Observable.combineLatest(items$, itemsImgSrc$, (items, itemsImgSrc) => {
+
+            return items.map(
+                item => {
+                    let imageSource = _.find(itemsImgSrc, ['id', item.id]);
+
+                    if (imageSource) {
+                        item.image_source = imageSource.image_source;
+                    }
+
+                    return item;
+                }
+            );
+
+        })
+        .map(items => _.sortBy(items, [function(item) { return item.id; }]));
 
     }
 
@@ -50,7 +73,12 @@ export class ItemService {
 
         let action = {type: ITEMS_RELOAD, payload: payload};
 
+        // Clean old items image source
+        // this.store.dispatch({type: ITEMS_IMG_SRC_CLEAN});
+
         this.store.dispatch(action);
+
+        this.loadItemImgSrc(payload);
 
     }
 
@@ -74,5 +102,36 @@ export class ItemService {
 
         this.store.dispatch(action);
 
-    }                                                  
+        this.loadItemImgSrc(moreItems);
+
+    }         
+
+    loadItemImgSrc(items: Item[]) {
+
+        items.forEach(
+            item => {
+                let id = item.id;
+
+                this.getImageSource(id).subscribe(
+                    res => {
+                        let itemImgSrc = new ItemImgSrc();
+                        itemImgSrc.id = id;
+                        itemImgSrc.image_source = res;
+                        let action = {type: ITEMS_IMG_SRC_ADD, payload: itemImgSrc};
+                        this.store.dispatch(action);
+                    }
+                );
+            }
+        );
+
+    }     
+
+    private getImageSource(id: number): Observable<ImageSource> {
+
+        let imageEndPoint = `https://dummyimage.com/300x300&text=${id}`;
+
+        return Observable.from(nshttp.getImage(imageEndPoint));
+
+    }                                    
+
 }

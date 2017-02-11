@@ -1,7 +1,9 @@
-import { itemsReducer } from './item-reducer';
+import { itemsReducer, itemsImgSrcReducer } from './item-reducer';
 
 export const reducers = {
 
-    items: itemsReducer
+    items: itemsReducer,
+
+    itemsImgSrc: itemsImgSrcReducer
 
 }

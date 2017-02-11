@@ -43,7 +43,14 @@ export class ItemsComponent implements OnInit {
         this.items.subscribe(
             items => {
 
+                console.log(`-----Items list changed`);
+
                 if (this.itemList) {
+
+                    if (this.pullToRefreshInProgress) {
+                        this.itemList.notifyPullToRefreshFinished();
+                        this.pullToRefreshInProgress = false;
+                    }
 
                     if (this.loadOnDemandInProgress) {
                         this.itemList.notifyLoadOnDemandFinished();
@@ -80,4 +87,18 @@ export class ItemsComponent implements OnInit {
         this.itemService.loadMoreItems(this.itemPagesLoaded);
 
     }
+
+    public onPullToRefreshInitiated(args: ListViewEventData) {
+
+        console.log(`DashboardExpensesComponent - pull to refresh`);
+
+        this.pullToRefreshInProgress = true;
+
+        // Reset pages of item records loaded
+        this.itemPagesLoaded = 1;
+
+        this.itemService.loadItems();
+
+    }
+
 }
