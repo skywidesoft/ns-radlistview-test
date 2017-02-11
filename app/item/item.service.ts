@@ -7,7 +7,8 @@ import { Item } from "./item";
 import { AppState } from '../store/app-state';
 
 import {
-    ITEMS_RELOAD
+    ITEMS_RELOAD,
+    ITEMS_ADD_MANY
 } from '../store/item-reducer';
 
 @Injectable()
@@ -53,9 +54,11 @@ export class ItemService {
 
     }
 
-    loadMoreItems(): Observable<Item[]> {
+    loadMoreItems(pageNumber: number) {
 
-        let currentItemSize = this.items.length;
+        let moreItems: Item[] = [];
+
+        let currentItemSize = (pageNumber - 1) * this.pageSize;
 
         // Add one more page of items and return Observable
         for (let i = currentItemSize + 1; i <= currentItemSize + this.pageSize ; i++) {
@@ -64,10 +67,12 @@ export class ItemService {
             newItem.name = `Item ${i}`;
             newItem.role = `Role ${i}`;
 
-            this.items.push(newItem);
+            moreItems.push(newItem);
         }
 
-        return Observable.of(this.items);
+        let action = {type: ITEMS_ADD_MANY, payload: moreItems};
+
+        this.store.dispatch(action);
 
     }                                                  
 }

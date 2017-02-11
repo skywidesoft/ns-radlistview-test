@@ -17,10 +17,12 @@ export class ItemsComponent implements OnInit {
 
     itemList: RadListView;
 
-    loadOnDemandInProgress = false;
-
     itemPagesLoaded: number;
     pageSize = 8;
+
+    // Pull to refresh/load on demand status
+    pullToRefreshInProgress = false;
+    loadOnDemandInProgress = false;
 
     constructor(private itemService: ItemService, private page: Page) { }
 
@@ -38,22 +40,44 @@ export class ItemsComponent implements OnInit {
         // Get items
         this.items = this.itemService.getItems();
 
+        this.items.subscribe(
+            items => {
+
+                if (this.itemList) {
+
+                    if (this.loadOnDemandInProgress) {
+                        this.itemList.notifyLoadOnDemandFinished();
+                        this.loadOnDemandInProgress = false;
+                    }
+
+                }
+
+                setTimeout( () => {
+
+                    // If current page > 1, scroll to index
+                    if (this.itemPagesLoaded > 1) {
+                        let toIndex = (this.itemPagesLoaded - 1) * this.pageSize;
+
+                        if (this.itemList.items && toIndex < this.itemList.items.length) {
+                            this.itemList.scrollToIndex(toIndex);
+                        }                    
+                    }
+
+                }, 500);
+
+            }
+        );
+
     }
 
     public onLoadMoreItemsRequested(args: ListViewEventData) {
+
         console.log(`Loading more data`);
 
-        this.items = this.itemService.loadMoreItems();
+        this.loadOnDemandInProgress = true;
 
-        this.items.subscribe( data => {
-            this.itemPagesLoaded++;
+        this.itemPagesLoaded++;
+        this.itemService.loadMoreItems(this.itemPagesLoaded);
 
-            this.itemList.notifyLoadOnDemandFinished(); 
-            this.itemList.refresh();
-
-            setTimeout(() => {
-                this.itemList.scrollToIndex((this.itemPagesLoaded - 1) * this.pageSize);
-            }, 500);
-        });
     }
 }
