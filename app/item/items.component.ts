@@ -12,43 +12,32 @@ import { ItemService } from "./item.service";
     templateUrl: "./items.component.html",
 })
 export class ItemsComponent implements OnInit {
+
     items: Observable<Item[]>;
 
     itemList: RadListView;
 
     loadOnDemandInProgress = false;
 
-    pageNumber: number;
+    itemPagesLoaded: number;
     pageSize = 8;
 
     constructor(private itemService: ItemService, private page: Page) { }
 
     ngOnInit(): void {
-        this.pageNumber = 1;
+
+        this.itemPagesLoaded = 1;
 
         this.itemList = <RadListView>this.page.getViewById('itemList');
 
-        this.items = this.itemService.getListItems();
+        this.items = null;
+
+        this.itemService.loadItems();
         // console.log(`Items: ${JSON.stringify(this.items)}`);
 
-/*        this.items.subscribe( data => {
-            console.log(`Items obs: ${JSON.stringify(this.items)}`);
-        });*/
+        // Get items
+        this.items = this.itemService.getItems();
 
-/*        this.items.subscribe( data => {
-
-            if (this.pageNumber > 1) {
-                if (this.loadOnDemandInProgress) {
-                    this.itemList.notifyLoadOnDemandFinished(); 
-                    this.loadOnDemandInProgress = false;
-                }
-                
-                setTimeout(() => {
-                    this.itemList.scrollToIndex((this.pageNumber - 1) * this.pageSize);
-                }, 500);
-            }
-
-        });*/
     }
 
     public onLoadMoreItemsRequested(args: ListViewEventData) {
@@ -57,13 +46,13 @@ export class ItemsComponent implements OnInit {
         this.items = this.itemService.loadMoreItems();
 
         this.items.subscribe( data => {
-            this.pageNumber++;
+            this.itemPagesLoaded++;
 
             this.itemList.notifyLoadOnDemandFinished(); 
             this.itemList.refresh();
 
             setTimeout(() => {
-                this.itemList.scrollToIndex((this.pageNumber - 1) * this.pageSize);
+                this.itemList.scrollToIndex((this.itemPagesLoaded - 1) * this.pageSize);
             }, 500);
         });
     }

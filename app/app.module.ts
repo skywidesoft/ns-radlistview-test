@@ -3,6 +3,10 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { AppRoutingModule } from "./app.routing";
 import { AppComponent } from "./app.component";
 
+// @ngrx/store
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './store/reducers';
+
 import { ItemService } from "./item/item.service";
 import { ItemsComponent } from "./item/items.component";
 import { ItemDetailComponent } from "./item/item-detail.component";
@@ -15,6 +19,7 @@ import { LISTVIEW_DIRECTIVES } from 'nativescript-telerik-ui-pro/listview/angula
     ],
     imports: [
         NativeScriptModule,
+        StoreModule.provideStore(reducers),
         AppRoutingModule
     ],
     declarations: [

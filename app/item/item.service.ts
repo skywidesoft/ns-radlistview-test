@@ -1,7 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Observable } from 'rxjs/Rx';
+import { Store } from '@ngrx/store';
 
 import { Item } from "./item";
+
+import { AppState } from '../store/app-state';
+
+import {
+    ITEMS_RELOAD
+} from '../store/item-reducer';
 
 @Injectable()
 export class ItemService {
@@ -19,8 +26,13 @@ export class ItemService {
         { id: 8, name: "Item 8", role: "Role 8" }
     );
 
-    getItems(): Item[] {
-        return this.items;
+    constructor(private store: Store<AppState>) {
+    }
+
+    getItems(): Observable<Item[]> {
+
+        return this.store.select(state => state.items);
+
     }
 
     getItem(id: number): Item {
@@ -29,6 +41,16 @@ export class ItemService {
 
     getListItems(): Observable<Item[]> {
         return Observable.of(this.items);
+    }
+
+    loadItems() {
+
+        let payload = this.items;
+
+        let action = {type: ITEMS_RELOAD, payload: payload};
+
+        this.store.dispatch(action);
+
     }
 
     loadMoreItems(): Observable<Item[]> {
