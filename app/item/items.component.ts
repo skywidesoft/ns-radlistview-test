@@ -92,12 +92,14 @@ export class ItemsComponent implements OnInit {
 
         console.log(`DashboardExpensesComponent - pull to refresh`);
 
-        this.pullToRefreshInProgress = true;
+        // this.pullToRefreshInProgress = true;
 
         // Reset pages of item records loaded
-        this.itemPagesLoaded = 1;
+        // this.itemPagesLoaded = 1;
 
-        this.itemService.loadItems();
+        // this.itemService.loadItems();
+
+        this.itemList.notifyPullToRefreshFinished();
 
     }
 
