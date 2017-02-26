@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Observable } from 'rxjs/Rx';
 import { ListViewLinearLayout, ListViewEventData, RadListView, ListViewLoadOnDemandMode } from 'nativescript-telerik-ui-pro/listview';
 import { Page } from 'ui/page';
+import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Item } from "./item";
 import { ItemService } from "./item.service";
@@ -24,7 +25,9 @@ export class ItemsComponent implements OnInit {
     pullToRefreshInProgress = false;
     loadOnDemandInProgress = false;
 
-    constructor(private itemService: ItemService, private page: Page) { }
+    constructor(private itemService: ItemService, 
+        private page: Page,
+        private router: RouterExtensions) { }
 
     ngOnInit(): void {
 
@@ -101,6 +104,12 @@ export class ItemsComponent implements OnInit {
 
         this.itemList.notifyPullToRefreshFinished();
 
+    }
+
+    public onItemTap(id: number) {
+        console.log(`Item with id ${id} was tapped`);
+
+        this.router.navigate(['/item', id]);
     }
 
 }

@@ -60,7 +60,14 @@ export class ItemService {
     }
 
     getItem(id: number): Item {
-        return this.items.filter(item => item.id === id)[0];
+        let item = new Item();
+
+        item.id = id;
+        item.name = `Item ${id}`;
+        item.role = `Role ${id}`;
+
+        return item;
+        // return this.items.filter(item => item.id === id)[0];
     }
 
     getListItems(): Observable<Item[]> {

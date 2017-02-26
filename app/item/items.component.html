@@ -10,7 +10,7 @@
         loadOnDemandMode="Manual" (loadMoreDataRequested)="onLoadMoreItemsRequested($event)">
 
         <template tkListItemTemplate let-item="item">
-            <StackLayout orientation="vertical">
+            <StackLayout orientation="vertical" (tap)="onItemTap(item.id)">
                 <Label class="h2" text="ID: {{item.id}}"></Label>
                 <Label [nsRouterLink]="['/item', item.id]" [text]="item.name"
                     class="h1"></Label>
