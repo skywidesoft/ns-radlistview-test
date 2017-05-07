@@ -9,7 +9,7 @@
     <RadListView id="itemList" [items]="items | async" class="list-group"
         loadOnDemandMode="Manual" (loadMoreDataRequested)="onLoadMoreItemsRequested($event)">
 
-        <template tkListItemTemplate let-item="item">
+        <ng-template tkListItemTemplate let-item="item">
             <StackLayout orientation="vertical" (tap)="onItemTap(item.id)">
                 <Label class="h2" text="ID: {{item.id}}"></Label>
                 <Label [nsRouterLink]="['/item', item.id]" [text]="item.name"
@@ -17,7 +17,7 @@
                 <Label class="h2" [text]="item.role"></Label>
                 <Image [src]="item.image_source" height="100" width="100" stretch="fill"></Image>
             </StackLayout>
-        </template>
+        </ng-template>
 
     </RadListView>
 </GridLayout>
