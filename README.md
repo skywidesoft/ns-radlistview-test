@@ -6,7 +6,7 @@ A testing app to demo the usage of NativeScript UI Pro's "RAD List View" compone
 ### The demo is built on
 * Nativescript 3.0.0
 * Nativescript Angular 3.0.0
-* Nativescript UI Pro 2.0.0
+* Nativescript UI Pro 2.0.1
 
 ### Run the app from source code
 ```
