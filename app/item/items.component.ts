@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Observable } from 'rxjs/Rx';
 import { ListViewLinearLayout, ListViewEventData, RadListView, ListViewLoadOnDemandMode } from 'nativescript-telerik-ui-pro/listview';
-import { Page } from 'ui/page';
+import { Page } from 'tns-core-modules/ui/page';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Item } from "./item";
@@ -21,6 +21,8 @@ export class ItemsComponent implements OnInit {
     itemPagesLoaded: number;
     pageSize = 8;
 
+    selectedItemIndex: number;
+
     // Pull to refresh/load on demand status
     pullToRefreshInProgress = false;
     loadOnDemandInProgress = false;
@@ -30,6 +32,8 @@ export class ItemsComponent implements OnInit {
         private router: RouterExtensions) { }
 
     ngOnInit(): void {
+
+        this.selectedItemIndex = 0;
 
         this.itemPagesLoaded = 1;
 
@@ -62,18 +66,20 @@ export class ItemsComponent implements OnInit {
 
                 }
 
-                setTimeout( () => {
+                if (this.page.android) {
+                    setTimeout( () => {
 
-                    // If current page > 1, scroll to index
-                    if (this.itemPagesLoaded > 1) {
-                        let toIndex = (this.itemPagesLoaded - 1) * this.pageSize;
+                        // If current page > 1, scroll to index
+                        if (this.itemPagesLoaded > 1) {
+                            let toIndex = (this.itemPagesLoaded - 1) * this.pageSize;
 
-                        if (this.itemList.items && toIndex < this.itemList.items.length) {
-                            this.itemList.scrollToIndex(toIndex);
-                        }                    
-                    }
+                            if (this.itemList.items && toIndex < this.itemList.items.length) {
+                                this.itemList.scrollToIndex(toIndex);
+                            }                    
+                        }
 
-                }, 500);
+                    }, 500);
+                }
 
             }
         );

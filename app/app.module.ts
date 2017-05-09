@@ -13,6 +13,8 @@ import { ItemDetailComponent } from "./item/item-detail.component";
 
 import { LISTVIEW_DIRECTIVES } from 'nativescript-telerik-ui-pro/listview/angular';
 
+import { COMMON_DIRECTIVES } from './navigation/directives';
+
 @NgModule({
     bootstrap: [
         AppComponent
@@ -23,6 +25,7 @@ import { LISTVIEW_DIRECTIVES } from 'nativescript-telerik-ui-pro/listview/angula
         AppRoutingModule
     ],
     declarations: [
+        COMMON_DIRECTIVES,
         LISTVIEW_DIRECTIVES,
         AppComponent,
         ItemsComponent,
