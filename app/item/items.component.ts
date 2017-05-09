@@ -63,23 +63,21 @@ export class ItemsComponent implements OnInit {
                     if (this.loadOnDemandInProgress) {
                         this.itemList.notifyLoadOnDemandFinished();
                         this.loadOnDemandInProgress = false;
-                    }
+                    } else {
 
-                }
+                        if (this.page.android) {
+                            // If current page > 1, scroll to index
+                            if (this.itemPagesLoaded > 1) {
+                                let toIndex = (this.itemPagesLoaded - 1) * this.pageSize;
 
-                if (this.page.android) {
-                    setTimeout( () => {
-
-                        // If current page > 1, scroll to index
-                        if (this.itemPagesLoaded > 1) {
-                            let toIndex = (this.itemPagesLoaded - 1) * this.pageSize;
-
-                            if (this.itemList.items && toIndex < this.itemList.items.length) {
-                                this.itemList.scrollToIndex(toIndex);
-                            }                    
+                                if (this.itemList.items && toIndex < this.itemList.items.length) {
+                                    this.itemList.scrollToIndex(toIndex);
+                                }                    
+                            }                            
                         }
 
-                    }, 500);
+                    }
+
                 }
 
             }
