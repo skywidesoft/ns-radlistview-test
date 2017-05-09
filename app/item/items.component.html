@@ -7,12 +7,14 @@
         pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInitiated($event)">-->
 
     <RadListView id="itemList" [items]="items | async" class="list-group"
-        loadOnDemandMode="Manual" (loadMoreDataRequested)="onLoadMoreItemsRequested($event)">
+        (loaded)="onLoaded($event)"
+        loadOnDemandMode="Manual" (loadMoreDataRequested)="onLoadMoreItemsRequested($event)"
+        (itemTap)="onItemTap($event)">
 
         <ng-template tkListItemTemplate let-item="item">
-            <StackLayout orientation="vertical" (tap)="onItemTap(item.id)">
+            <StackLayout orientation="vertical">
                 <Label class="h2" text="ID: {{item.id}}"></Label>
-                <Label [nsRouterLink]="['/item', item.id]" [text]="item.name"
+                <Label [text]="item.name"
                     class="h1"></Label>
                 <Label class="h2" [text]="item.role"></Label>
                 <Image [src]="item.image_source" height="100" width="100" stretch="fill"></Image>

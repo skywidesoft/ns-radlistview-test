@@ -22,6 +22,7 @@ export class ItemsComponent implements OnInit {
     pageSize = 8;
 
     selectedItemIndex: number;
+    selectedItem: Item;
 
     // Pull to refresh/load on demand status
     pullToRefreshInProgress = false;
@@ -112,10 +113,32 @@ export class ItemsComponent implements OnInit {
 
     }
 
+    /*
     public onItemTap(id: number) {
         console.log(`Item with id ${id} was tapped`);
 
         this.router.navigate(['/item', id]);
+    }
+    */
+
+    public onItemTap(args: ListViewEventData) {
+
+        this.selectedItemIndex = args.itemIndex;
+        console.log(`---------Item at index ${this.selectedItemIndex} was tapped`);
+
+        this.selectedItem = this.itemList.items[this.selectedItemIndex]
+        console.log(`---------Item: ${JSON.stringify(this.selectedItem)}`);
+
+        this.router.navigate(['/item', this.selectedItem.id]);
+    }
+
+    onLoaded(args){
+
+        // Scroll to index for Android
+        if (this.page.android) {
+            this.itemList.scrollToIndex(this.selectedItemIndex);
+        }
+
     }
 
 }
